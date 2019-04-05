@@ -8,12 +8,12 @@ Ce didacticiel vous apprend à créer une application Web python django qui util
 > - Téléchargez le [démarrage rapide de Python](https://developer.microsoft.com/graph/quick-start?platform=option-Python) pour obtenir du code de travail en quelques minutes.
 > - Téléchargez ou clonez le [référentiel GitHub](https://github.com/microsoftgraph/msgraph-training-pythondjangoapp).
 
-## <a name="prerequisites"></a>Conditions requises
+## <a name="prerequisites"></a>Conditions préalables
 
 Avant de commencer ce didacticiel, [python](https://www.python.org/) (avec [PIP](https://pypi.org/project/pip/)) doit être installé sur votre ordinateur de développement. Si vous n'avez pas python, visitez le lien précédent pour obtenir les options de téléchargement.
 
 > [!NOTE]
-> Ce didacticiel a été écrit avec Python version 3.7.0 et Django version 2,1. Les étapes de ce guide peuvent fonctionner avec d'autres versions, mais cela n'a pas été testé.
+> Ce didacticiel a été écrit avec Python version 3.7.0 et Django version 2,2. Les étapes de ce guide peuvent fonctionner avec d'autres versions, mais cela n'a pas été testé.
 
 ## <a name="feedback"></a>Commentaires
 
