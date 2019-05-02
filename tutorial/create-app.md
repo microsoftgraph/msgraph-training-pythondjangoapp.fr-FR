@@ -1,6 +1,6 @@
 <!-- markdownlint-disable MD002 MD041 -->
 
-Dans cet exercice, vous allez utiliser [Django](https://www.djangoproject.com/) pour créer une application Web. Si Django n'est pas encore installé, vous pouvez l'installer à partir de votre interface de ligne de commande (CLI) à l'aide de la commande suivante.
+Dans cet exercice, vous allez utiliser [Django](https://www.djangoproject.com/) pour créer une application Web. Si Django n’est pas encore installé, vous pouvez l’installer à partir de votre interface de ligne de commande (CLI) à l’aide de la commande suivante.
 
 ```Shell
 pip install Django
@@ -12,13 +12,13 @@ Ouvrez votre interface CLI, accédez à un répertoire où vous disposez des dro
 django-admin.py startproject graph_tutorial
 ```
 
-Django crée un nouveau répertoire appelé `graph_tutorial` et génère un échafaudage d'une application Web Django. Accédez à ce nouveau répertoire et entrez la commande suivante pour démarrer un serveur Web local.
+Django crée un nouveau répertoire appelé `graph_tutorial` et génère un échafaudage d’une application Web Django. Accédez à ce nouveau répertoire et entrez la commande suivante pour démarrer un serveur Web local.
 
 ```Shell
 python manage.py runserver
 ```
 
-Ouvrez votre navigateur et accédez à `http://localhost:8000`. Si tout fonctionne, vous verrez une page d'accueil de Django. Si ce n'est pas le cas, consultez le [Guide de prise](https://www.djangoproject.com/start/)en main de Django.
+Ouvrez votre navigateur et accédez à `http://localhost:8000`. Si tout fonctionne, vous verrez une page d’accueil de Django. Si ce n’est pas le cas, consultez le [Guide de prise](https://www.djangoproject.com/start/)en main de Django.
 
 À présent que vous avez vérifié le projet, ajoutez une application au projet. Exécutez la commande suivante dans votre interface CLI.
 
@@ -59,7 +59,7 @@ urlpatterns = [
 ]
 ```
 
-À présent, mettez à jour le projet URLconf pour l'importer. Ouvrez le `./graph_tutorial/urls.py` fichier et remplacez le contenu par ce qui suit.
+À présent, mettez à jour le projet URLconf pour l’importer. Ouvrez le `./graph_tutorial/urls.py` fichier et remplacez le contenu par ce qui suit.
 
 ```python
 from django.contrib import admin
@@ -72,7 +72,7 @@ urlpatterns = [
 ]
 ```
 
-Enfin, ajoutez une vue temporaire à `tutorials` l'application pour vérifier que le routage des URL fonctionne. Ouvrez le fichier `./tutorial/views.py` et ajoutez le code suivant.
+Enfin, ajoutez une vue temporaire à `tutorials` l’application pour vérifier que le routage des URL fonctionne. Ouvrez le fichier `./tutorial/views.py` et ajoutez le code suivant.
 
 ```python
 from django.http import HttpResponse, HttpResponseRedirect
@@ -87,8 +87,8 @@ Enregistrez toutes vos modifications et redémarrez le serveur. Accédez à `htt
 Avant de poursuivre, installez des bibliothèques supplémentaires que vous utiliserez plus tard:
 
 - [Demandes-OAuthlib: OAuth pour les êtres humains](https://requests-oauthlib.readthedocs.io/en/latest/) pour la gestion des flux de connexion et de jetons OAuth, et pour passer des appels à Microsoft Graph.
-- [PyYAML](https://pyyaml.org/wiki/PyYAMLDocumentation) pour le chargement de la configuration à partir d'un fichier YAML.
-- [python-dateutil](https://pypi.org/project/python-dateutil/) pour l'analyse des chaînes de date ISO 8601 renvoyées par Microsoft Graph.
+- [PyYAML](https://pyyaml.org/wiki/PyYAMLDocumentation) pour le chargement de la configuration à partir d’un fichier YAML.
+- [python-dateutil](https://pypi.org/project/python-dateutil/) pour l’analyse des chaînes de date ISO 8601 renvoyées par Microsoft Graph.
 
 Exécutez la commande suivante dans votre interface CLI.
 
@@ -98,9 +98,9 @@ pip install pyyaml
 pip install python-dateutil
 ```
 
-## <a name="design-the-app"></a>Concevoir l'application
+## <a name="design-the-app"></a>Concevoir l’application
 
-Commencez par créer un répertoire de modèles et définissez une disposition globale pour l'application. Créez un répertoire dans le `./tutorial` répertoire nommé. `templates` Dans le `templates` répertoire, créez un répertoire nommé `tutorial`. Enfin, créez un fichier dans ce répertoire nommé `layout.html`. Le chemin d'accès relatif à partir de la racine de `./tutorial/templates/tutorial/layout.html`votre projet doit être. Ajoutez le code suivant dans ce fichier.
+Commencez par créer un répertoire de modèles et définissez une disposition globale pour l’application. Créez un répertoire dans le `./tutorial` répertoire nommé. `templates` Dans le `templates` répertoire, créez un répertoire nommé `tutorial`. Enfin, créez un fichier dans ce répertoire nommé `layout.html`. Le chemin d’accès relatif à partir de la racine de `./tutorial/templates/tutorial/layout.html`votre projet doit être. Ajoutez le code suivant dans ce fichier.
 
 ```html
 <!DOCTYPE html>
@@ -190,7 +190,7 @@ Commencez par créer un répertoire de modèles et définissez une disposition g
 
 Ce code ajoute [bootstrap](http://getbootstrap.com/) pour les styles simples et [font Isard](https://fontawesome.com/) pour certaines icônes simples. Il définit également une disposition globale avec une barre de navigation.
 
-Créez maintenant un nouveau répertoire dans le `./tutorial` répertoire nommé `static`. Dans le `static` répertoire, créez un répertoire nommé `tutorial`. Enfin, créez un fichier dans ce répertoire nommé `app.css`. Le chemin d'accès relatif à partir de la racine de `./tutorial/static/tutorial/app.css`votre projet doit être. Ajoutez le code suivant dans ce fichier.
+Créez maintenant un nouveau répertoire dans le `./tutorial` répertoire nommé `static`. Dans le `static` répertoire, créez un répertoire nommé `tutorial`. Enfin, créez un fichier dans ce répertoire nommé `app.css`. Le chemin d’accès relatif à partir de la racine de `./tutorial/static/tutorial/app.css`votre projet doit être. Ajoutez le code suivant dans ce fichier.
 
 ```css
 body {
@@ -204,7 +204,7 @@ body {
 }
 ```
 
-Ensuite, créez un modèle pour la page d'accueil qui utilise la mise en page. Créez un fichier dans le `./tutorial/templates/tutorial` répertoire nommé `home.html` et ajoutez le code suivant.
+Ensuite, créez un modèle pour la page d’accueil qui utilise la mise en page. Créez un fichier dans le `./tutorial/templates/tutorial` répertoire nommé `home.html` et ajoutez le code suivant.
 
 ```html
 {% extends "tutorial/layout.html" %}
@@ -222,7 +222,7 @@ Ensuite, créez un modèle pour la page d'accueil qui utilise la mise en page. C
 {% endblock %}
 ```
 
-Mettez à `home` jour l'affichage pour utiliser ce modèle. Ouvrez le `./tutorial/views.py` fichier et ajoutez la nouvelle fonction suivante.
+Mettez à `home` jour l’affichage pour utiliser ce modèle. Ouvrez le `./tutorial/views.py` fichier et ajoutez la nouvelle fonction suivante.
 
 ```python
 def initialize_context(request):
@@ -249,6 +249,6 @@ def home(request):
   return render(request, 'tutorial/home.html', context)
 ```
 
-Enregistrez toutes vos modifications et redémarrez le serveur. À présent, l'application doit être très différente.
+Enregistrez toutes vos modifications et redémarrez le serveur. À présent, l’application doit être très différente.
 
-![Capture d'écran de la page d'accueil repensée](./images/create-app-01.png)
+![Capture d’écran de la page d’accueil repensée](./images/create-app-01.png)

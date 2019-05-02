@@ -1,8 +1,8 @@
 <!-- markdownlint-disable MD002 MD041 -->
 
-Dans cet exercice, vous allez incorporer Microsoft Graph dans l'application. Pour cette application, vous allez utiliser la bibliothèque [requêtes-OAuthlib](https://requests-oauthlib.readthedocs.io/en/latest/) pour passer des appels à Microsoft Graph.
+Dans cet exercice, vous allez incorporer Microsoft Graph dans l’application. Pour cette application, vous allez utiliser la bibliothèque [requêtes-OAuthlib](https://requests-oauthlib.readthedocs.io/en/latest/) pour passer des appels à Microsoft Graph.
 
-## <a name="get-calendar-events-from-outlook"></a>Obtenir des événements de calendrier à partir d'Outlook
+## <a name="get-calendar-events-from-outlook"></a>Obtenir des événements de calendrier à partir d’Outlook
 
 Commencez par ajouter une méthode pour `./tutorial/graph_helper.py` extraire les événements de calendrier. Ajoutez la méthode suivante.
 
@@ -25,9 +25,9 @@ def get_calendar_events(token):
 
 Examinez ce que fait ce code.
 
-- L'URL qui sera appelée est `/v1.0/me/events`.
-- Le `$select` paramètre limite les champs renvoyés pour chaque événement à ceux que l'affichage utilise réellement.
-- Le `$orderby` paramètre trie les résultats en fonction de la date et de l'heure de leur création, avec l'élément le plus récent en premier.
+- L’URL qui sera appelée est `/v1.0/me/events`.
+- Le `$select` paramètre limite les champs renvoyés pour chaque événement à ceux que l’affichage utilise réellement.
+- Le `$orderby` paramètre trie les résultats en fonction de la date et de l’heure de leur création, avec l’élément le plus récent en premier.
 
 Créez maintenant un affichage Calendrier. Commencez par modifier `from tutorial.graph_helper import get_user` la ligne comme suit.
 
@@ -64,7 +64,7 @@ Enfin, mettez à **** jour le lien `./tutorial/templates/tutorial/layout.html` d
 <a class="nav-link{% if request.resolver_match.view_name == 'calendar' %} active{% endif %}" href="{% url 'calendar' %}">Calendar</a>
 ```
 
-À présent, vous pouvez le tester. Connectez-vous, puis cliquez sur le lien **calendrier** dans la barre de navigation. Si tout fonctionne, vous devez voir un vidage JSON des événements sur le calendrier de l'utilisateur.
+À présent, vous pouvez le tester. Connectez-vous, puis cliquez sur le lien **calendrier** dans la barre de navigation. Si tout fonctionne, vous devez voir un vidage JSON des événements sur le calendrier de l’utilisateur.
 
 ## <a name="display-the-results"></a>Afficher les résultats
 
@@ -99,7 +99,7 @@ Enfin, mettez à **** jour le lien `./tutorial/templates/tutorial/layout.html` d
 {% endblock %}
 ```
 
-Cela permet d'exécuter une boucle dans une collection d'événements et d'ajouter une ligne de tableau pour chacun d'eux. Ajoutez l'instruction `import` suivante en haut du `./tutorials/views.py` fichier.
+Cela permet d’exécuter une boucle dans une collection d’événements et d’ajouter une ligne de tableau pour chacun d’eux. Ajoutez l’instruction `import` suivante en haut du `./tutorials/views.py` fichier.
 
 ```python
 import dateutil.parser
@@ -127,6 +127,6 @@ def calendar(request):
   return render(request, 'tutorial/calendar.html', context)
 ```
 
-Actualisez la page et l'application doit maintenant afficher un tableau d'événements.
+Actualisez la page et l’application doit maintenant afficher un tableau d’événements.
 
-![Capture d'écran du tableau des événements](./images/add-msgraph-01.png)
+![Capture d’écran du tableau des événements](./images/add-msgraph-01.png)

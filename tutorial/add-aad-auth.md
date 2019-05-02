@@ -1,6 +1,6 @@
 <!-- markdownlint-disable MD002 MD041 -->
 
-Dans cet exercice, vous allez étendre l'application de l'exercice précédent pour prendre en charge l'authentification avec Azure AD. Cela est nécessaire pour obtenir le jeton d'accès OAuth nécessaire pour appeler Microsoft Graph. Dans cette étape, vous allez intégrer la bibliothèque [requêtes-OAuthlib](https://requests-oauthlib.readthedocs.io/en/latest/) dans l'application.
+Dans cet exercice, vous allez étendre l’application de l’exercice précédent pour prendre en charge l’authentification avec Azure AD. Cela est nécessaire pour obtenir le jeton d’accès OAuth nécessaire pour appeler Microsoft Graph. Dans cette étape, vous allez intégrer la bibliothèque [requêtes-OAuthlib](https://requests-oauthlib.readthedocs.io/en/latest/) dans l’application.
 
 Créez un fichier à la racine du projet nommé `oauth_settings.yml`et ajoutez le contenu suivant.
 
@@ -14,10 +14,10 @@ authorize_endpoint: /oauth2/v2.0/authorize
 token_endpoint: /oauth2/v2.0/token
 ```
 
-Remplacez `YOUR_APP_ID_HERE` par l'ID de l'application dans le portail d'inscription de `YOUR_APP_SECRET_HERE` l'application et remplacez par le mot de passe que vous avez généré.
+Remplacez `YOUR_APP_ID_HERE` par l’ID de l’application dans le portail d’inscription de `YOUR_APP_SECRET_HERE` l’application et remplacez par le mot de passe que vous avez généré.
 
 > [!IMPORTANT]
-> Si vous utilisez le contrôle de code source tel que git, il est maintenant recommandé d'exclure le `oauth_settings.yml` fichier du contrôle de code source afin d'éviter une fuite accidentelle de votre ID d'application et de votre mot de passe.
+> Si vous utilisez le contrôle de code source tel que git, il est maintenant recommandé d’exclure le `oauth_settings.yml` fichier du contrôle de code source afin d’éviter une fuite accidentelle de votre ID d’application et de votre mot de passe.
 
 ## <a name="implement-sign-in"></a>Mettre en œuvre la connexion
 
@@ -70,7 +70,7 @@ def get_token_from_code(callback_url, expected_state):
   return token
 ```
 
-Ce fichier contiendra toutes vos méthodes d'authentification. L `get_sign_in_url` 'génère une URL d'autorisation et `get_token_from_code` la méthode échange la réponse d'autorisation pour un jeton d'accès.
+Ce fichier contiendra toutes vos méthodes d’authentification. L `get_sign_in_url` 'génère une URL d’autorisation et `get_token_from_code` la méthode échange la réponse d’autorisation pour un jeton d’accès.
 
 Ajoutez les instructions `import` suivantes en haut de `./tutorial/views.py`.
 
@@ -102,9 +102,9 @@ def callback(request):
 
 Cette définition définit deux nouvelles vues `signin` : `callback`et.
 
-L' `signin` action génère l'URL de connexion Azure ad, enregistre la `state` valeur générée par le client OAuth, puis redirige le navigateur vers la page de connexion Azure ad.
+L' `signin` action génère l’URL de connexion Azure ad, enregistre la `state` valeur générée par le client OAuth, puis redirige le navigateur vers la page de connexion Azure ad.
 
-L' `callback` action est l'endroit où Azure redirige une fois la connexion terminée. Cette action permet de s' `state` assurer que la valeur correspond à la valeur enregistrée, puis utilise le code d'autorisation envoyé par Azure pour demander un jeton d'accès. Il redirige ensuite vers la page d'accueil avec le jeton d'accès dans la valeur d'erreur temporaire. Vous l'utiliserez pour vérifier que notre connexion fonctionne avant de poursuivre. Avant de procéder au test, vous devez ajouter les vues `./tutorial/urls.py`à.
+L' `callback` action est l’endroit où Azure redirige une fois la connexion terminée. Cette action permet de s' `state` assurer que la valeur correspond à la valeur enregistrée, puis utilise le code d’autorisation envoyé par Azure pour demander un jeton d’accès. Il redirige ensuite vers la page d’accueil avec le jeton d’accès dans la valeur d’erreur temporaire. Vous l’utiliserez pour vérifier que notre connexion fonctionne avant de poursuivre. Avant de procéder au test, vous devez ajouter les vues `./tutorial/urls.py`à.
 
 ```python
 path('signin', views.sign_in, name='signin'),
@@ -123,9 +123,9 @@ Remplacez la `<a href="#" class="nav-link">Sign In</a>` ligne `./tutorial/templa
 <a href="{% url 'signin' %}" class="nav-link">Sign In</a>
 ```
 
-Démarrez le serveur et accédez à `https://localhost:8000/tutorial`. Cliquez sur le bouton de connexion et vous devez être redirigé vers `https://login.microsoftonline.com`. Connectez-vous avec votre compte Microsoft et acceptez les autorisations demandées. Le navigateur redirige vers l'application en affichant le jeton.
+Démarrez le serveur et accédez à `https://localhost:8000/tutorial`. Cliquez sur le bouton de connexion et vous devez être redirigé vers `https://login.microsoftonline.com`. Connectez-vous avec votre compte Microsoft et acceptez les autorisations demandées. Le navigateur redirige vers l’application en affichant le jeton.
 
-### <a name="get-user-details"></a>Obtenir les détails de l'utilisateur
+### <a name="get-user-details"></a>Obtenir les détails de l’utilisateur
 
 Créez un fichier dans le `./tutorial` répertoire nommé `graph_helper.py` et ajoutez le code suivant.
 
@@ -142,11 +142,11 @@ def get_user(token):
   return user.json()
 ```
 
-La `get_user` méthode effectue une requête get au point de terminaison `/me` Microsoft Graph pour obtenir le profil de l'utilisateur à l'aide du jeton d'accès que vous avez acquis précédemment.
+La `get_user` méthode effectue une requête get au point de terminaison `/me` Microsoft Graph pour obtenir le profil de l’utilisateur à l’aide du jeton d’accès que vous avez acquis précédemment.
 
-Mettez à `callback` jour la `./tutorial/views.py` méthode dans pour obtenir le profil de l'utilisateur à partir de Microsoft Graph.
+Mettez à `callback` jour la `./tutorial/views.py` méthode dans pour obtenir le profil de l’utilisateur à partir de Microsoft Graph.
 
-Tout d'abord, ajoutez `import` l'instruction suivante en haut du fichier.
+Tout d’abord, ajoutez `import` l’instruction suivante en haut du fichier.
 
 ```python
 from tutorial.graph_helper import get_user
@@ -169,11 +169,11 @@ def callback(request):
   return HttpResponseRedirect(reverse('home'))
 ```
 
-Le nouveau code appelle la `get_user` méthode pour demander le profil de l'utilisateur. Il ajoute l'objet User à la sortie temporaire à des fins de test.
+Le nouveau code appelle la `get_user` méthode pour demander le profil de l’utilisateur. Il ajoute l’objet User à la sortie temporaire à des fins de test.
 
 ## <a name="storing-the-tokens"></a>Stockage des jetons
 
-Maintenant que vous pouvez obtenir des jetons, il est temps de mettre en œuvre un moyen de les stocker dans l'application. Étant donné qu'il s'agit d'un exemple d'application, pour des raisons de simplicité, vous les stockerez dans la session. Une application réelle utiliserait une solution de stockage sécurisé plus fiable, comme une base de données.
+Maintenant que vous pouvez obtenir des jetons, il est temps de mettre en œuvre un moyen de les stocker dans l’application. Étant donné qu’il s’agit d’un exemple d’application, pour des raisons de simplicité, vous les stockerez dans la session. Une application réelle utiliserait une solution de stockage sécurisé plus fiable, comme une base de données.
 
 Ajoutez les nouvelles méthodes suivantes à `./tutorial/auth_helper.py`.
 
@@ -249,19 +249,19 @@ Mettez à **** jour le lien Déconnexion dans `./tutorial/templates/tutorial/lay
 <a href="{% url 'signout' %}" class="dropdown-item">Sign Out</a>
 ```
 
-ReDémarrez le serveur et suivez le processus de connexion. Vous devez revenir sur la page d'accueil, mais l'interface utilisateur doit changer pour indiquer que vous êtes connecté.
+Redémarrez le serveur et suivez le processus de connexion. Vous devez revenir sur la page d’accueil, mais l’interface utilisateur doit changer pour indiquer que vous êtes connecté.
 
-![Capture d'écran de la page d'accueil après la connexion](./images/add-aad-auth-01.png)
+![Capture d’écran de la page d’accueil après la connexion](./images/add-aad-auth-01.png)
 
-Cliquez sur Avatar de l'utilisateur dans le coin supérieur droit pour **** accéder au lien Déconnexion. Cliquez **** sur Déconnexion pour réinitialiser la session et revenir à la page d'accueil.
+Cliquez sur Avatar de l’utilisateur dans le coin supérieur droit pour **** accéder au lien Déconnexion. Cliquez **** sur Déconnexion pour réinitialiser la session et revenir à la page d’accueil.
 
-![Capture d'écran du menu déroulant avec le lien déConnexion](./images/add-aad-auth-02.png)
+![Capture d’écran du menu déroulant avec le lien Déconnexion](./images/add-aad-auth-02.png)
 
 ## <a name="refreshing-tokens"></a>Actualisation des jetons
 
-À ce stade, votre application a un jeton d'accès, qui est envoyé `Authorization` dans l'en-tête des appels d'API. Il s'agit du jeton qui permet à l'application d'accéder à Microsoft Graph pour le compte de l'utilisateur.
+À ce stade, votre application a un jeton d’accès, qui est envoyé `Authorization` dans l’en-tête des appels d’API. Il s’agit du jeton qui permet à l’application d’accéder à Microsoft Graph pour le compte de l’utilisateur.
 
-Toutefois, ce jeton est éphémère. Le jeton expire une heure après son émission. C'est ici que le jeton d'actualisation devient utile. Le jeton d'actualisation permet à l'application de demander un nouveau jeton d'accès sans demander à l'utilisateur de se reconnecter. Mettez à jour le code de gestion des jetons pour implémenter l'actualisation des jetons.
+Toutefois, ce jeton est éphémère. Le jeton expire une heure après son émission. C’est ici que le jeton d’actualisation devient utile. Le jeton d’actualisation permet à l’application de demander un nouveau jeton d’accès sans demander à l’utilisateur de se reconnecter. Mettez à jour le code de gestion des jetons pour implémenter l’actualisation des jetons.
 
 Remplacez la méthode `get_token` `./tutorial/auth_helper.py` existante par ce qui suit.
 
@@ -297,4 +297,4 @@ def get_token(request):
       return token
 ```
 
-Cette méthode vérifie d'abord si le jeton d'accès a expiré ou s'il arrive à expiration. Si c'est le cas, il utilise le jeton d'actualisation pour obtenir de nouveaux jetons, puis il met à jour le cache et renvoie le nouveau jeton d'accès.
+Cette méthode vérifie d’abord si le jeton d’accès a expiré ou s’il arrive à expiration. Si c’est le cas, il utilise le jeton d’actualisation pour obtenir de nouveaux jetons, puis il met à jour le cache et renvoie le nouveau jeton d’accès.
