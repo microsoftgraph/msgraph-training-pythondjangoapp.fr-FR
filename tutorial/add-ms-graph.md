@@ -29,7 +29,7 @@ Examinez ce que fait ce code.
 - Le `$select` paramètre limite les champs renvoyés pour chaque événement à ceux que l’affichage utilise réellement.
 - Le `$orderby` paramètre trie les résultats en fonction de la date et de l’heure de leur création, avec l’élément le plus récent en premier.
 
-Créez maintenant un affichage Calendrier. Commencez par modifier `from tutorial.graph_helper import get_user` la ligne comme suit.
+Créez maintenant un affichage Calendrier. Dans `./tutorial/views.py`, modifiez d’abord `from tutorial.graph_helper import get_user` la ligne comme suit.
 
 ```python
 from tutorial.graph_helper import get_user, get_calendar_events
