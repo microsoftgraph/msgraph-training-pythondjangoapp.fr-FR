@@ -3,7 +3,7 @@
 Dans cet exercice, vous allez utiliser [Django](https://www.djangoproject.com/) pour créer une application Web. Si Django n’est pas encore installé, vous pouvez l’installer à partir de votre interface de ligne de commande (CLI) à l’aide de la commande suivante.
 
 ```Shell
-pip install Django=2.2.2
+pip install Django=2.2.5
 ```
 
 Ouvrez votre interface CLI, accédez à un répertoire où vous disposez des droits nécessaires pour créer des fichiers, puis exécutez la commande suivante pour créer une nouvelle application Django.
@@ -84,9 +84,9 @@ def home(request):
 
 Enregistrez toutes vos modifications et redémarrez le serveur. Accédez à `http://localhost:8000/tutorial`. Vous devriez voir`Welcome to the tutorial.`
 
-Avant de poursuivre, installez des bibliothèques supplémentaires que vous utiliserez plus tard:
+Avant de poursuivre, installez des bibliothèques supplémentaires que vous utiliserez plus tard :
 
-- [Demandes-OAuthlib: OAuth pour les êtres humains](https://requests-oauthlib.readthedocs.io/en/latest/) pour la gestion des flux de connexion et de jetons OAuth, et pour passer des appels à Microsoft Graph.
+- [Demandes-OAuthlib : OAuth pour les êtres humains](https://requests-oauthlib.readthedocs.io/en/latest/) pour la gestion des flux de connexion et de jetons OAuth, et pour passer des appels à Microsoft Graph.
 - [PyYAML](https://pyyaml.org/wiki/PyYAMLDocumentation) pour le chargement de la configuration à partir d’un fichier YAML.
 - [python-dateutil](https://pypi.org/project/python-dateutil/) pour l’analyse des chaînes de date ISO 8601 renvoyées par Microsoft Graph.
 
