@@ -1,27 +1,27 @@
 <!-- markdownlint-disable MD002 MD041 -->
 
-<span data-ttu-id="36590-101">Dans cet exercice, vous allez étendre l’application de l’exercice précédent pour prendre en charge l’authentification avec Azure AD.</span><span class="sxs-lookup"><span data-stu-id="36590-101">In this exercise you will extend the application from the previous exercise to support authentication with Azure AD.</span></span> <span data-ttu-id="36590-102">Cela est nécessaire pour obtenir le jeton d’accès OAuth nécessaire pour appeler Microsoft Graph.</span><span class="sxs-lookup"><span data-stu-id="36590-102">This is required to obtain the necessary OAuth access token to call the Microsoft Graph.</span></span> <span data-ttu-id="36590-103">Dans cette étape, vous allez intégrer la bibliothèque [requêtes-OAuthlib](https://requests-oauthlib.readthedocs.io/en/latest/) dans l’application.</span><span class="sxs-lookup"><span data-stu-id="36590-103">In this step you will integrate the [Requests-OAuthlib](https://requests-oauthlib.readthedocs.io/en/latest/) library into the application.</span></span>
+<span data-ttu-id="528ce-101">Dans cet exercice, vous allez étendre l’application de l’exercice précédent pour prendre en charge l’authentification avec Azure AD.</span><span class="sxs-lookup"><span data-stu-id="528ce-101">In this exercise you will extend the application from the previous exercise to support authentication with Azure AD.</span></span> <span data-ttu-id="528ce-102">Cela est nécessaire pour obtenir le jeton d’accès OAuth nécessaire pour appeler Microsoft Graph.</span><span class="sxs-lookup"><span data-stu-id="528ce-102">This is required to obtain the necessary OAuth access token to call the Microsoft Graph.</span></span> <span data-ttu-id="528ce-103">Dans cette étape, vous allez intégrer la bibliothèque [requêtes-OAuthlib](https://requests-oauthlib.readthedocs.io/en/latest/) dans l’application.</span><span class="sxs-lookup"><span data-stu-id="528ce-103">In this step you will integrate the [Requests-OAuthlib](https://requests-oauthlib.readthedocs.io/en/latest/) library into the application.</span></span>
 
-<span data-ttu-id="36590-104">Créez un fichier à la racine du projet nommé `oauth_settings.yml`et ajoutez le contenu suivant.</span><span class="sxs-lookup"><span data-stu-id="36590-104">Create a new file in the root of the project named `oauth_settings.yml`, and add the following content.</span></span>
+<span data-ttu-id="528ce-104">Créez un fichier à la racine du projet nommé `oauth_settings.yml`et ajoutez le contenu suivant.</span><span class="sxs-lookup"><span data-stu-id="528ce-104">Create a new file in the root of the project named `oauth_settings.yml`, and add the following content.</span></span>
 
 ```text
-app_id: YOUR_APP_ID_HERE
-app_secret: YOUR_APP_PASSWORD_HERE
-redirect: http://localhost:8000/tutorial/callback
-scopes: openid profile offline_access user.read calendars.read
-authority: https://login.microsoftonline.com/common
-authorize_endpoint: /oauth2/v2.0/authorize
-token_endpoint: /oauth2/v2.0/token
+app_id: "YOUR_APP_ID_HERE"
+app_secret: "YOUR_APP_PASSWORD_HERE"
+redirect: "http://localhost:8000/tutorial/callback"
+scopes: "openid profile offline_access user.read calendars.read"
+authority: "https://login.microsoftonline.com/common"
+authorize_endpoint: "/oauth2/v2.0/authorize"
+token_endpoint: "/oauth2/v2.0/token"
 ```
 
-<span data-ttu-id="36590-105">Remplacez `YOUR_APP_ID_HERE` par l’ID de l’application dans le portail d’inscription de `YOUR_APP_SECRET_HERE` l’application et remplacez par le mot de passe que vous avez généré.</span><span class="sxs-lookup"><span data-stu-id="36590-105">Replace `YOUR_APP_ID_HERE` with the application ID from the Application Registration Portal, and replace `YOUR_APP_SECRET_HERE` with the password you generated.</span></span>
+<span data-ttu-id="528ce-105">Remplacez `YOUR_APP_ID_HERE` par l’ID de l’application dans le portail d’inscription de `YOUR_APP_SECRET_HERE` l’application et remplacez par le mot de passe que vous avez généré.</span><span class="sxs-lookup"><span data-stu-id="528ce-105">Replace `YOUR_APP_ID_HERE` with the application ID from the Application Registration Portal, and replace `YOUR_APP_SECRET_HERE` with the password you generated.</span></span>
 
 > [!IMPORTANT]
-> <span data-ttu-id="36590-106">Si vous utilisez le contrôle de code source tel que git, il est maintenant recommandé d’exclure le `oauth_settings.yml` fichier du contrôle de code source afin d’éviter une fuite accidentelle de votre ID d’application et de votre mot de passe.</span><span class="sxs-lookup"><span data-stu-id="36590-106">If you're using source control such as git, now would be a good time to exclude the `oauth_settings.yml` file from source control to avoid inadvertently leaking your app ID and password.</span></span>
+> <span data-ttu-id="528ce-106">Si vous utilisez le contrôle de code source tel que git, il est maintenant recommandé d’exclure le `oauth_settings.yml` fichier du contrôle de code source afin d’éviter une fuite accidentelle de votre ID d’application et de votre mot de passe.</span><span class="sxs-lookup"><span data-stu-id="528ce-106">If you're using source control such as git, now would be a good time to exclude the `oauth_settings.yml` file from source control to avoid inadvertently leaking your app ID and password.</span></span>
 
-## <a name="implement-sign-in"></a><span data-ttu-id="36590-107">Mettre en œuvre la connexion</span><span class="sxs-lookup"><span data-stu-id="36590-107">Implement sign-in</span></span>
+## <a name="implement-sign-in"></a><span data-ttu-id="528ce-107">Mettre en œuvre la connexion</span><span class="sxs-lookup"><span data-stu-id="528ce-107">Implement sign-in</span></span>
 
-<span data-ttu-id="36590-108">Créez un fichier dans le `./tutorial` répertoire nommé `auth_helper.py` et ajoutez le code suivant.</span><span class="sxs-lookup"><span data-stu-id="36590-108">Create a new file in the `./tutorial` directory named `auth_helper.py` and add the following code.</span></span>
+<span data-ttu-id="528ce-108">Créez un fichier dans le `./tutorial` répertoire nommé `auth_helper.py` et ajoutez le code suivant.</span><span class="sxs-lookup"><span data-stu-id="528ce-108">Create a new file in the `./tutorial` directory named `auth_helper.py` and add the following code.</span></span>
 
 ```python
 import yaml
@@ -70,16 +70,16 @@ def get_token_from_code(callback_url, expected_state):
   return token
 ```
 
-<span data-ttu-id="36590-109">Ce fichier contiendra toutes vos méthodes d’authentification.</span><span class="sxs-lookup"><span data-stu-id="36590-109">This file will hold all of your authentication-related methods.</span></span> <span data-ttu-id="36590-110">L `get_sign_in_url` 'génère une URL d’autorisation et `get_token_from_code` la méthode échange la réponse d’autorisation pour un jeton d’accès.</span><span class="sxs-lookup"><span data-stu-id="36590-110">The `get_sign_in_url` generates an authorization URL, and the `get_token_from_code` method exchanges the authorization response for an access token.</span></span>
+<span data-ttu-id="528ce-109">Ce fichier contiendra toutes vos méthodes d’authentification.</span><span class="sxs-lookup"><span data-stu-id="528ce-109">This file will hold all of your authentication-related methods.</span></span> <span data-ttu-id="528ce-110">L `get_sign_in_url` 'génère une URL d’autorisation et `get_token_from_code` la méthode échange la réponse d’autorisation pour un jeton d’accès.</span><span class="sxs-lookup"><span data-stu-id="528ce-110">The `get_sign_in_url` generates an authorization URL, and the `get_token_from_code` method exchanges the authorization response for an access token.</span></span>
 
-<span data-ttu-id="36590-111">Ajoutez les instructions `import` suivantes en haut de `./tutorial/views.py`.</span><span class="sxs-lookup"><span data-stu-id="36590-111">Add the following `import` statements to the top of `./tutorial/views.py`.</span></span>
+<span data-ttu-id="528ce-111">Ajoutez les instructions `import` suivantes en haut de `./tutorial/views.py`.</span><span class="sxs-lookup"><span data-stu-id="528ce-111">Add the following `import` statements to the top of `./tutorial/views.py`.</span></span>
 
 ```python
 from django.urls import reverse
 from tutorial.auth_helper import get_sign_in_url, get_token_from_code
 ```
 
-<span data-ttu-id="36590-112">À présent, ajoutez quelques nouvelles vues dans le `./tutorial/views.py` fichier.</span><span class="sxs-lookup"><span data-stu-id="36590-112">Now add a couple of new views in the `./tutorial/views.py` file.</span></span>
+<span data-ttu-id="528ce-112">À présent, ajoutez quelques nouvelles vues dans le `./tutorial/views.py` fichier.</span><span class="sxs-lookup"><span data-stu-id="528ce-112">Now add a couple of new views in the `./tutorial/views.py` file.</span></span>
 
 ```python
 def sign_in(request):
@@ -100,34 +100,34 @@ def callback(request):
   return HttpResponseRedirect(reverse('home'))
 ```
 
-<span data-ttu-id="36590-113">Cette définition définit deux nouvelles vues `signin` : `callback`et.</span><span class="sxs-lookup"><span data-stu-id="36590-113">This defines two new views: `signin` and `callback`.</span></span>
+<span data-ttu-id="528ce-113">Cette définition définit deux nouvelles vues `signin` : `callback`et.</span><span class="sxs-lookup"><span data-stu-id="528ce-113">This defines two new views: `signin` and `callback`.</span></span>
 
-<span data-ttu-id="36590-114">L' `signin` action génère l’URL de connexion Azure ad, enregistre la `state` valeur générée par le client OAuth, puis redirige le navigateur vers la page de connexion Azure ad.</span><span class="sxs-lookup"><span data-stu-id="36590-114">The `signin` action generates the Azure AD signin URL, saves the `state` value generated by the OAuth client, then redirects the browser to the Azure AD signin page.</span></span>
+<span data-ttu-id="528ce-114">L' `signin` action génère l’URL de connexion Azure ad, enregistre la `state` valeur générée par le client OAuth, puis redirige le navigateur vers la page de connexion Azure ad.</span><span class="sxs-lookup"><span data-stu-id="528ce-114">The `signin` action generates the Azure AD signin URL, saves the `state` value generated by the OAuth client, then redirects the browser to the Azure AD signin page.</span></span>
 
-<span data-ttu-id="36590-115">L' `callback` action est l’endroit où Azure redirige une fois la connexion terminée.</span><span class="sxs-lookup"><span data-stu-id="36590-115">The `callback` action is where Azure redirects after the signin is complete.</span></span> <span data-ttu-id="36590-116">Cette action permet de s' `state` assurer que la valeur correspond à la valeur enregistrée, puis utilise le code d’autorisation envoyé par Azure pour demander un jeton d’accès.</span><span class="sxs-lookup"><span data-stu-id="36590-116">That action makes sure the `state` value matches the saved value, then uses the authorization code sent by Azure to request an access token.</span></span> <span data-ttu-id="36590-117">Il redirige ensuite vers la page d’accueil avec le jeton d’accès dans la valeur d’erreur temporaire.</span><span class="sxs-lookup"><span data-stu-id="36590-117">It then redirects back to the home page with the access token in the temporary error value.</span></span> <span data-ttu-id="36590-118">Vous l’utiliserez pour vérifier que notre connexion fonctionne avant de poursuivre.</span><span class="sxs-lookup"><span data-stu-id="36590-118">You'll use this to verify that our sign-in is working before moving on.</span></span> <span data-ttu-id="36590-119">Avant de procéder au test, vous devez ajouter les vues `./tutorial/urls.py`à.</span><span class="sxs-lookup"><span data-stu-id="36590-119">Before you test, you need to add the views to `./tutorial/urls.py`.</span></span>
+<span data-ttu-id="528ce-115">L' `callback` action est l’endroit où Azure redirige une fois la connexion terminée.</span><span class="sxs-lookup"><span data-stu-id="528ce-115">The `callback` action is where Azure redirects after the signin is complete.</span></span> <span data-ttu-id="528ce-116">Cette action permet de s' `state` assurer que la valeur correspond à la valeur enregistrée, puis utilise le code d’autorisation envoyé par Azure pour demander un jeton d’accès.</span><span class="sxs-lookup"><span data-stu-id="528ce-116">That action makes sure the `state` value matches the saved value, then uses the authorization code sent by Azure to request an access token.</span></span> <span data-ttu-id="528ce-117">Il redirige ensuite vers la page d’accueil avec le jeton d’accès dans la valeur d’erreur temporaire.</span><span class="sxs-lookup"><span data-stu-id="528ce-117">It then redirects back to the home page with the access token in the temporary error value.</span></span> <span data-ttu-id="528ce-118">Vous l’utiliserez pour vérifier que notre connexion fonctionne avant de poursuivre.</span><span class="sxs-lookup"><span data-stu-id="528ce-118">You'll use this to verify that our sign-in is working before moving on.</span></span> <span data-ttu-id="528ce-119">Avant de procéder au test, vous devez ajouter les vues `./tutorial/urls.py`à.</span><span class="sxs-lookup"><span data-stu-id="528ce-119">Before you test, you need to add the views to `./tutorial/urls.py`.</span></span>
 
 ```python
 path('signin', views.sign_in, name='signin'),
 path('callback', views.callback, name='callback'),
 ```
 
-<span data-ttu-id="36590-120">Remplacez la `<a href="#" class="btn btn-primary btn-large">Click here to sign in</a>` ligne `./tutorial/templates/tutorial/home.html` par ce qui suit.</span><span class="sxs-lookup"><span data-stu-id="36590-120">Replace the `<a href="#" class="btn btn-primary btn-large">Click here to sign in</a>` line in `./tutorial/templates/tutorial/home.html` with the following.</span></span>
+<span data-ttu-id="528ce-120">Remplacez la `<a href="#" class="btn btn-primary btn-large">Click here to sign in</a>` ligne `./tutorial/templates/tutorial/home.html` par ce qui suit.</span><span class="sxs-lookup"><span data-stu-id="528ce-120">Replace the `<a href="#" class="btn btn-primary btn-large">Click here to sign in</a>` line in `./tutorial/templates/tutorial/home.html` with the following.</span></span>
 
 ```html
 <a href="{% url 'signin' %}" class="btn btn-primary btn-large">Click here to sign in</a>
 ```
 
-<span data-ttu-id="36590-121">Remplacez la `<a href="#" class="nav-link">Sign In</a>` ligne `./tutorial/templates/tutorial/layout.html` par ce qui suit.</span><span class="sxs-lookup"><span data-stu-id="36590-121">Replace the `<a href="#" class="nav-link">Sign In</a>` line in `./tutorial/templates/tutorial/layout.html` with the following.</span></span>
+<span data-ttu-id="528ce-121">Remplacez la `<a href="#" class="nav-link">Sign In</a>` ligne `./tutorial/templates/tutorial/layout.html` par ce qui suit.</span><span class="sxs-lookup"><span data-stu-id="528ce-121">Replace the `<a href="#" class="nav-link">Sign In</a>` line in `./tutorial/templates/tutorial/layout.html` with the following.</span></span>
 
 ```html
 <a href="{% url 'signin' %}" class="nav-link">Sign In</a>
 ```
 
-<span data-ttu-id="36590-122">Démarrez le serveur et accédez à `https://localhost:8000/tutorial`.</span><span class="sxs-lookup"><span data-stu-id="36590-122">Start the server and browse to `https://localhost:8000/tutorial`.</span></span> <span data-ttu-id="36590-123">Cliquez sur le bouton de connexion et vous devez être redirigé vers `https://login.microsoftonline.com`.</span><span class="sxs-lookup"><span data-stu-id="36590-123">Click the sign-in button and you should be redirected to `https://login.microsoftonline.com`.</span></span> <span data-ttu-id="36590-124">Connectez-vous avec votre compte Microsoft et acceptez les autorisations demandées.</span><span class="sxs-lookup"><span data-stu-id="36590-124">Login with your Microsoft account and consent to the requested permissions.</span></span> <span data-ttu-id="36590-125">Le navigateur redirige vers l’application en affichant le jeton.</span><span class="sxs-lookup"><span data-stu-id="36590-125">The browser redirects to the app, showing the token.</span></span>
+<span data-ttu-id="528ce-122">Démarrez le serveur et accédez à `https://localhost:8000/tutorial`.</span><span class="sxs-lookup"><span data-stu-id="528ce-122">Start the server and browse to `https://localhost:8000/tutorial`.</span></span> <span data-ttu-id="528ce-123">Cliquez sur le bouton de connexion et vous devez être redirigé vers `https://login.microsoftonline.com`.</span><span class="sxs-lookup"><span data-stu-id="528ce-123">Click the sign-in button and you should be redirected to `https://login.microsoftonline.com`.</span></span> <span data-ttu-id="528ce-124">Connectez-vous avec votre compte Microsoft et acceptez les autorisations demandées.</span><span class="sxs-lookup"><span data-stu-id="528ce-124">Login with your Microsoft account and consent to the requested permissions.</span></span> <span data-ttu-id="528ce-125">Le navigateur redirige vers l’application en affichant le jeton.</span><span class="sxs-lookup"><span data-stu-id="528ce-125">The browser redirects to the app, showing the token.</span></span>
 
-### <a name="get-user-details"></a><span data-ttu-id="36590-126">Obtenir les détails de l’utilisateur</span><span class="sxs-lookup"><span data-stu-id="36590-126">Get user details</span></span>
+### <a name="get-user-details"></a><span data-ttu-id="528ce-126">Obtenir les détails de l’utilisateur</span><span class="sxs-lookup"><span data-stu-id="528ce-126">Get user details</span></span>
 
-<span data-ttu-id="36590-127">Créez un fichier dans le `./tutorial` répertoire nommé `graph_helper.py` et ajoutez le code suivant.</span><span class="sxs-lookup"><span data-stu-id="36590-127">Create a new file in the `./tutorial` directory named `graph_helper.py` and add the following code.</span></span>
+<span data-ttu-id="528ce-127">Créez un fichier dans le `./tutorial` répertoire nommé `graph_helper.py` et ajoutez le code suivant.</span><span class="sxs-lookup"><span data-stu-id="528ce-127">Create a new file in the `./tutorial` directory named `graph_helper.py` and add the following code.</span></span>
 
 ```python
 from requests_oauthlib import OAuth2Session
@@ -142,17 +142,17 @@ def get_user(token):
   return user.json()
 ```
 
-<span data-ttu-id="36590-128">La `get_user` méthode effectue une requête get au point de terminaison `/me` Microsoft Graph pour obtenir le profil de l’utilisateur à l’aide du jeton d’accès que vous avez acquis précédemment.</span><span class="sxs-lookup"><span data-stu-id="36590-128">The `get_user` method makes a GET request to the Microsoft Graph `/me` endpoint to get the user's profile, using the access token you acquired previously.</span></span>
+<span data-ttu-id="528ce-128">La `get_user` méthode effectue une requête get au point de terminaison `/me` Microsoft Graph pour obtenir le profil de l’utilisateur à l’aide du jeton d’accès que vous avez acquis précédemment.</span><span class="sxs-lookup"><span data-stu-id="528ce-128">The `get_user` method makes a GET request to the Microsoft Graph `/me` endpoint to get the user's profile, using the access token you acquired previously.</span></span>
 
-<span data-ttu-id="36590-129">Mettez à `callback` jour la `./tutorial/views.py` méthode dans pour obtenir le profil de l’utilisateur à partir de Microsoft Graph.</span><span class="sxs-lookup"><span data-stu-id="36590-129">Update the `callback` method in `./tutorial/views.py` to get the user's profile from Microsoft Graph.</span></span>
+<span data-ttu-id="528ce-129">Mettez à `callback` jour la `./tutorial/views.py` méthode dans pour obtenir le profil de l’utilisateur à partir de Microsoft Graph.</span><span class="sxs-lookup"><span data-stu-id="528ce-129">Update the `callback` method in `./tutorial/views.py` to get the user's profile from Microsoft Graph.</span></span>
 
-<span data-ttu-id="36590-130">Tout d’abord, ajoutez `import` l’instruction suivante en haut du fichier.</span><span class="sxs-lookup"><span data-stu-id="36590-130">First, add the following `import` statement to the top of the file.</span></span>
+<span data-ttu-id="528ce-130">Tout d’abord, ajoutez `import` l’instruction suivante en haut du fichier.</span><span class="sxs-lookup"><span data-stu-id="528ce-130">First, add the following `import` statement to the top of the file.</span></span>
 
 ```python
 from tutorial.graph_helper import get_user
 ```
 
-<span data-ttu-id="36590-131">Remplacez la `callback` méthode par le code suivant.</span><span class="sxs-lookup"><span data-stu-id="36590-131">Replace the `callback` method with the following code.</span></span>
+<span data-ttu-id="528ce-131">Remplacez la `callback` méthode par le code suivant.</span><span class="sxs-lookup"><span data-stu-id="528ce-131">Replace the `callback` method with the following code.</span></span>
 
 ```python
 def callback(request):
@@ -169,13 +169,13 @@ def callback(request):
   return HttpResponseRedirect(reverse('home'))
 ```
 
-<span data-ttu-id="36590-132">Le nouveau code appelle la `get_user` méthode pour demander le profil de l’utilisateur.</span><span class="sxs-lookup"><span data-stu-id="36590-132">The new code calls the `get_user` method to request the user's profile.</span></span> <span data-ttu-id="36590-133">Il ajoute l’objet User à la sortie temporaire à des fins de test.</span><span class="sxs-lookup"><span data-stu-id="36590-133">It adds the user object to the temporary output for testing.</span></span>
+<span data-ttu-id="528ce-132">Le nouveau code appelle la `get_user` méthode pour demander le profil de l’utilisateur.</span><span class="sxs-lookup"><span data-stu-id="528ce-132">The new code calls the `get_user` method to request the user's profile.</span></span> <span data-ttu-id="528ce-133">Il ajoute l’objet User à la sortie temporaire à des fins de test.</span><span class="sxs-lookup"><span data-stu-id="528ce-133">It adds the user object to the temporary output for testing.</span></span>
 
-## <a name="storing-the-tokens"></a><span data-ttu-id="36590-134">Stockage des jetons</span><span class="sxs-lookup"><span data-stu-id="36590-134">Storing the tokens</span></span>
+## <a name="storing-the-tokens"></a><span data-ttu-id="528ce-134">Stockage des jetons</span><span class="sxs-lookup"><span data-stu-id="528ce-134">Storing the tokens</span></span>
 
-<span data-ttu-id="36590-135">Maintenant que vous pouvez obtenir des jetons, il est temps de mettre en œuvre un moyen de les stocker dans l’application.</span><span class="sxs-lookup"><span data-stu-id="36590-135">Now that you can get tokens, it's time to implement a way to store them in the app.</span></span> <span data-ttu-id="36590-136">Étant donné qu’il s’agit d’un exemple d’application, pour des raisons de simplicité, vous les stockerez dans la session.</span><span class="sxs-lookup"><span data-stu-id="36590-136">Since this is a sample app, for simplicity's sake, you'll store them in the session.</span></span> <span data-ttu-id="36590-137">Une application réelle utiliserait une solution de stockage sécurisé plus fiable, comme une base de données.</span><span class="sxs-lookup"><span data-stu-id="36590-137">A real-world app would use a more reliable secure storage solution, like a database.</span></span>
+<span data-ttu-id="528ce-135">Maintenant que vous pouvez obtenir des jetons, il est temps de mettre en œuvre un moyen de les stocker dans l’application.</span><span class="sxs-lookup"><span data-stu-id="528ce-135">Now that you can get tokens, it's time to implement a way to store them in the app.</span></span> <span data-ttu-id="528ce-136">Étant donné qu’il s’agit d’un exemple d’application, pour des raisons de simplicité, vous les stockerez dans la session.</span><span class="sxs-lookup"><span data-stu-id="528ce-136">Since this is a sample app, for simplicity's sake, you'll store them in the session.</span></span> <span data-ttu-id="528ce-137">Une application réelle utiliserait une solution de stockage sécurisé plus fiable, comme une base de données.</span><span class="sxs-lookup"><span data-stu-id="528ce-137">A real-world app would use a more reliable secure storage solution, like a database.</span></span>
 
-<span data-ttu-id="36590-138">Ajoutez les nouvelles méthodes suivantes à `./tutorial/auth_helper.py`.</span><span class="sxs-lookup"><span data-stu-id="36590-138">Add the following new methods to `./tutorial/auth_helper.py`.</span></span>
+<span data-ttu-id="528ce-138">Ajoutez les nouvelles méthodes suivantes à `./tutorial/auth_helper.py`.</span><span class="sxs-lookup"><span data-stu-id="528ce-138">Add the following new methods to `./tutorial/auth_helper.py`.</span></span>
 
 ```python
 def store_token(request, token):
@@ -200,13 +200,13 @@ def remove_user_and_token(request):
     del request.session['user']
 ```
 
-<span data-ttu-id="36590-139">Ensuite, mettez à `callback` jour la `./tutorial/views.py` fonction dans pour stocker les jetons dans la session et rediriger vers la page principale.</span><span class="sxs-lookup"><span data-stu-id="36590-139">Then, update the `callback` function in `./tutorial/views.py` to store the tokens in the session and redirect back to the main page.</span></span> <span data-ttu-id="36590-140">Remplacez la `from tutorial.auth_helper import get_sign_in_url, get_token_from_code` ligne par ce qui suit.</span><span class="sxs-lookup"><span data-stu-id="36590-140">Replace the `from tutorial.auth_helper import get_sign_in_url, get_token_from_code` line with the following.</span></span>
+<span data-ttu-id="528ce-139">Ensuite, mettez à `callback` jour la `./tutorial/views.py` fonction dans pour stocker les jetons dans la session et rediriger vers la page principale.</span><span class="sxs-lookup"><span data-stu-id="528ce-139">Then, update the `callback` function in `./tutorial/views.py` to store the tokens in the session and redirect back to the main page.</span></span> <span data-ttu-id="528ce-140">Remplacez la `from tutorial.auth_helper import get_sign_in_url, get_token_from_code` ligne par ce qui suit.</span><span class="sxs-lookup"><span data-stu-id="528ce-140">Replace the `from tutorial.auth_helper import get_sign_in_url, get_token_from_code` line with the following.</span></span>
 
 ```python
 from tutorial.auth_helper import get_sign_in_url, get_token_from_code, store_token, store_user, remove_user_and_token, get_token
 ```
 
-<span data-ttu-id="36590-141">Remplacez la `callback` méthode par ce qui suit.</span><span class="sxs-lookup"><span data-stu-id="36590-141">Replace the `callback` method with the following.</span></span>
+<span data-ttu-id="528ce-141">Remplacez la `callback` méthode par ce qui suit.</span><span class="sxs-lookup"><span data-stu-id="528ce-141">Replace the `callback` method with the following.</span></span>
 
 ```python
 def callback(request):
@@ -225,9 +225,9 @@ def callback(request):
   return HttpResponseRedirect(reverse('home'))
 ```
 
-## <a name="implement-sign-out"></a><span data-ttu-id="36590-142">Mettre en œuvre la déconnexion</span><span class="sxs-lookup"><span data-stu-id="36590-142">Implement sign-out</span></span>
+## <a name="implement-sign-out"></a><span data-ttu-id="528ce-142">Mettre en œuvre la déconnexion</span><span class="sxs-lookup"><span data-stu-id="528ce-142">Implement sign-out</span></span>
 
-<span data-ttu-id="36590-143">Avant de tester cette nouvelle fonctionnalité, ajoutez une méthode pour vous déconnecter. Ajoutez un nouvel `sign_out` affichage dans `./tutorial/views.py`.</span><span class="sxs-lookup"><span data-stu-id="36590-143">Before you test this new feature, add a way to sign out. Add a new `sign_out` view in `./tutorial/views.py`.</span></span>
+<span data-ttu-id="528ce-143">Avant de tester cette nouvelle fonctionnalité, ajoutez une méthode pour vous déconnecter. Ajoutez un nouvel `sign_out` affichage dans `./tutorial/views.py`.</span><span class="sxs-lookup"><span data-stu-id="528ce-143">Before you test this new feature, add a way to sign out. Add a new `sign_out` view in `./tutorial/views.py`.</span></span>
 
 ```python
 def sign_out(request):
@@ -237,33 +237,33 @@ def sign_out(request):
   return HttpResponseRedirect(reverse('home'))
 ```
 
-<span data-ttu-id="36590-144">À présent, ajoutez cette `./tutorial/urls.py`vue à.</span><span class="sxs-lookup"><span data-stu-id="36590-144">Now add this view to `./tutorial/urls.py`.</span></span>
+<span data-ttu-id="528ce-144">À présent, ajoutez cette `./tutorial/urls.py`vue à.</span><span class="sxs-lookup"><span data-stu-id="528ce-144">Now add this view to `./tutorial/urls.py`.</span></span>
 
 ```python
 path('signout', views.sign_out, name='signout'),
 ```
 
-<span data-ttu-id="36590-145">Mettez à \*\*\*\* jour le lien Déconnexion dans `./tutorial/templates/tutorial/layout.html` pour utiliser cette nouvelle vue.</span><span class="sxs-lookup"><span data-stu-id="36590-145">Update the **Sign Out** link in `./tutorial/templates/tutorial/layout.html` to use this new view.</span></span> <span data-ttu-id="36590-146">Remplacez la `<a href="#" class="dropdown-item">Sign Out</a>` ligne par ce qui suit.</span><span class="sxs-lookup"><span data-stu-id="36590-146">Replace the `<a href="#" class="dropdown-item">Sign Out</a>` line with the following.</span></span>
+<span data-ttu-id="528ce-145">Mettez à jour le lien **déconnexion** dans `./tutorial/templates/tutorial/layout.html` pour utiliser cette nouvelle vue.</span><span class="sxs-lookup"><span data-stu-id="528ce-145">Update the **Sign Out** link in `./tutorial/templates/tutorial/layout.html` to use this new view.</span></span> <span data-ttu-id="528ce-146">Remplacez la `<a href="#" class="dropdown-item">Sign Out</a>` ligne par ce qui suit.</span><span class="sxs-lookup"><span data-stu-id="528ce-146">Replace the `<a href="#" class="dropdown-item">Sign Out</a>` line with the following.</span></span>
 
 ```html
 <a href="{% url 'signout' %}" class="dropdown-item">Sign Out</a>
 ```
 
-<span data-ttu-id="36590-147">Redémarrez le serveur et suivez le processus de connexion.</span><span class="sxs-lookup"><span data-stu-id="36590-147">Restart the server and go through the sign-in process.</span></span> <span data-ttu-id="36590-148">Vous devez revenir sur la page d’accueil, mais l’interface utilisateur doit changer pour indiquer que vous êtes connecté.</span><span class="sxs-lookup"><span data-stu-id="36590-148">You should end up back on the home page, but the UI should change to indicate that you are signed-in.</span></span>
+<span data-ttu-id="528ce-147">Redémarrez le serveur et suivez le processus de connexion.</span><span class="sxs-lookup"><span data-stu-id="528ce-147">Restart the server and go through the sign-in process.</span></span> <span data-ttu-id="528ce-148">Vous devez revenir sur la page d’accueil, mais l’interface utilisateur doit changer pour indiquer que vous êtes connecté.</span><span class="sxs-lookup"><span data-stu-id="528ce-148">You should end up back on the home page, but the UI should change to indicate that you are signed-in.</span></span>
 
 ![Capture d’écran de la page d’accueil après la connexion](./images/add-aad-auth-01.png)
 
-<span data-ttu-id="36590-150">Cliquez sur Avatar de l’utilisateur dans le coin supérieur droit pour \*\*\*\* accéder au lien Déconnexion.</span><span class="sxs-lookup"><span data-stu-id="36590-150">Click the user avatar in the top right corner to access the **Sign Out** link.</span></span> <span data-ttu-id="36590-151">Cliquez \*\*\*\* sur Déconnexion pour réinitialiser la session et revenir à la page d’accueil.</span><span class="sxs-lookup"><span data-stu-id="36590-151">Clicking **Sign Out** resets the session and returns you to the home page.</span></span>
+<span data-ttu-id="528ce-150">Cliquez sur Avatar de l’utilisateur dans le coin supérieur droit pour accéder au lien **déconnexion** .</span><span class="sxs-lookup"><span data-stu-id="528ce-150">Click the user avatar in the top right corner to access the **Sign Out** link.</span></span> <span data-ttu-id="528ce-151">Cliquez sur **déconnexion** pour réinitialiser la session et revenir à la page d’accueil.</span><span class="sxs-lookup"><span data-stu-id="528ce-151">Clicking **Sign Out** resets the session and returns you to the home page.</span></span>
 
 ![Capture d’écran du menu déroulant avec le lien Déconnexion](./images/add-aad-auth-02.png)
 
-## <a name="refreshing-tokens"></a><span data-ttu-id="36590-153">Actualisation des jetons</span><span class="sxs-lookup"><span data-stu-id="36590-153">Refreshing tokens</span></span>
+## <a name="refreshing-tokens"></a><span data-ttu-id="528ce-153">Actualisation des jetons</span><span class="sxs-lookup"><span data-stu-id="528ce-153">Refreshing tokens</span></span>
 
-<span data-ttu-id="36590-154">À ce stade, votre application a un jeton d’accès, qui est envoyé `Authorization` dans l’en-tête des appels d’API.</span><span class="sxs-lookup"><span data-stu-id="36590-154">At this point your application has an access token, which is sent in the `Authorization` header of API calls.</span></span> <span data-ttu-id="36590-155">Il s’agit du jeton qui permet à l’application d’accéder à Microsoft Graph pour le compte de l’utilisateur.</span><span class="sxs-lookup"><span data-stu-id="36590-155">This is the token that allows the app to access the Microsoft Graph on the user's behalf.</span></span>
+<span data-ttu-id="528ce-154">À ce stade, votre application a un jeton d’accès, qui est envoyé `Authorization` dans l’en-tête des appels d’API.</span><span class="sxs-lookup"><span data-stu-id="528ce-154">At this point your application has an access token, which is sent in the `Authorization` header of API calls.</span></span> <span data-ttu-id="528ce-155">Il s’agit du jeton qui permet à l’application d’accéder à Microsoft Graph pour le compte de l’utilisateur.</span><span class="sxs-lookup"><span data-stu-id="528ce-155">This is the token that allows the app to access the Microsoft Graph on the user's behalf.</span></span>
 
-<span data-ttu-id="36590-156">Toutefois, ce jeton est éphémère.</span><span class="sxs-lookup"><span data-stu-id="36590-156">However, this token is short-lived.</span></span> <span data-ttu-id="36590-157">Le jeton expire une heure après son émission.</span><span class="sxs-lookup"><span data-stu-id="36590-157">The token expires an hour after it is issued.</span></span> <span data-ttu-id="36590-158">C’est ici que le jeton d’actualisation devient utile.</span><span class="sxs-lookup"><span data-stu-id="36590-158">This is where the refresh token becomes useful.</span></span> <span data-ttu-id="36590-159">Le jeton d’actualisation permet à l’application de demander un nouveau jeton d’accès sans demander à l’utilisateur de se reconnecter.</span><span class="sxs-lookup"><span data-stu-id="36590-159">The refresh token allows the app to request a new access token without requiring the user to sign in again.</span></span> <span data-ttu-id="36590-160">Mettez à jour le code de gestion des jetons pour implémenter l’actualisation des jetons.</span><span class="sxs-lookup"><span data-stu-id="36590-160">Update the token management code to implement token refresh.</span></span>
+<span data-ttu-id="528ce-156">Toutefois, ce jeton est éphémère.</span><span class="sxs-lookup"><span data-stu-id="528ce-156">However, this token is short-lived.</span></span> <span data-ttu-id="528ce-157">Le jeton expire une heure après son émission.</span><span class="sxs-lookup"><span data-stu-id="528ce-157">The token expires an hour after it is issued.</span></span> <span data-ttu-id="528ce-158">C’est ici que le jeton d’actualisation devient utile.</span><span class="sxs-lookup"><span data-stu-id="528ce-158">This is where the refresh token becomes useful.</span></span> <span data-ttu-id="528ce-159">Le jeton d’actualisation permet à l’application de demander un nouveau jeton d’accès sans demander à l’utilisateur de se reconnecter.</span><span class="sxs-lookup"><span data-stu-id="528ce-159">The refresh token allows the app to request a new access token without requiring the user to sign in again.</span></span> <span data-ttu-id="528ce-160">Mettez à jour le code de gestion des jetons pour implémenter l’actualisation des jetons.</span><span class="sxs-lookup"><span data-stu-id="528ce-160">Update the token management code to implement token refresh.</span></span>
 
-<span data-ttu-id="36590-161">Remplacez la méthode `get_token` `./tutorial/auth_helper.py` existante par ce qui suit.</span><span class="sxs-lookup"><span data-stu-id="36590-161">Replace the existing `get_token` method in `./tutorial/auth_helper.py` with the following.</span></span>
+<span data-ttu-id="528ce-161">Remplacez la méthode `get_token` `./tutorial/auth_helper.py` existante par ce qui suit.</span><span class="sxs-lookup"><span data-stu-id="528ce-161">Replace the existing `get_token` method in `./tutorial/auth_helper.py` with the following.</span></span>
 
 ```python
 def get_token(request):
@@ -297,4 +297,4 @@ def get_token(request):
       return token
 ```
 
-<span data-ttu-id="36590-162">Cette méthode vérifie d’abord si le jeton d’accès a expiré ou s’il arrive à expiration.</span><span class="sxs-lookup"><span data-stu-id="36590-162">This method first checks if the access token is expired or close to expiring.</span></span> <span data-ttu-id="36590-163">Si c’est le cas, il utilise le jeton d’actualisation pour obtenir de nouveaux jetons, puis il met à jour le cache et renvoie le nouveau jeton d’accès.</span><span class="sxs-lookup"><span data-stu-id="36590-163">If it is, then it uses the refresh token to get new tokens, then updates the cache and returns the new access token.</span></span>
+<span data-ttu-id="528ce-162">Cette méthode vérifie d’abord si le jeton d’accès a expiré ou s’il arrive à expiration.</span><span class="sxs-lookup"><span data-stu-id="528ce-162">This method first checks if the access token is expired or close to expiring.</span></span> <span data-ttu-id="528ce-163">Si c’est le cas, il utilise le jeton d’actualisation pour obtenir de nouveaux jetons, puis il met à jour le cache et renvoie le nouveau jeton d’accès.</span><span class="sxs-lookup"><span data-stu-id="528ce-163">If it is, then it uses the refresh token to get new tokens, then updates the cache and returns the new access token.</span></span>
