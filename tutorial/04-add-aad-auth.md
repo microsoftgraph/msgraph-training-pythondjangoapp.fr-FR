@@ -5,13 +5,13 @@ Dans cet exercice, vous allez étendre l’application de l’exercice précéde
 Créez un fichier à la racine du projet nommé `oauth_settings.yml`et ajoutez le contenu suivant.
 
 ```text
-app_id: YOUR_APP_ID_HERE
-app_secret: YOUR_APP_PASSWORD_HERE
-redirect: http://localhost:8000/tutorial/callback
-scopes: openid profile offline_access user.read calendars.read
-authority: https://login.microsoftonline.com/common
-authorize_endpoint: /oauth2/v2.0/authorize
-token_endpoint: /oauth2/v2.0/token
+app_id: "YOUR_APP_ID_HERE"
+app_secret: "YOUR_APP_PASSWORD_HERE"
+redirect: "http://localhost:8000/tutorial/callback"
+scopes: "openid profile offline_access user.read calendars.read"
+authority: "https://login.microsoftonline.com/common"
+authorize_endpoint: "/oauth2/v2.0/authorize"
+token_endpoint: "/oauth2/v2.0/token"
 ```
 
 Remplacez `YOUR_APP_ID_HERE` par l’ID de l’application dans le portail d’inscription de `YOUR_APP_SECRET_HERE` l’application et remplacez par le mot de passe que vous avez généré.
@@ -243,7 +243,7 @@ def sign_out(request):
 path('signout', views.sign_out, name='signout'),
 ```
 
-Mettez à **** jour le lien Déconnexion dans `./tutorial/templates/tutorial/layout.html` pour utiliser cette nouvelle vue. Remplacez la `<a href="#" class="dropdown-item">Sign Out</a>` ligne par ce qui suit.
+Mettez à jour le lien **déconnexion** dans `./tutorial/templates/tutorial/layout.html` pour utiliser cette nouvelle vue. Remplacez la `<a href="#" class="dropdown-item">Sign Out</a>` ligne par ce qui suit.
 
 ```html
 <a href="{% url 'signout' %}" class="dropdown-item">Sign Out</a>
@@ -253,7 +253,7 @@ Redémarrez le serveur et suivez le processus de connexion. Vous devez revenir s
 
 ![Capture d’écran de la page d’accueil après la connexion](./images/add-aad-auth-01.png)
 
-Cliquez sur Avatar de l’utilisateur dans le coin supérieur droit pour **** accéder au lien Déconnexion. Cliquez **** sur Déconnexion pour réinitialiser la session et revenir à la page d’accueil.
+Cliquez sur Avatar de l’utilisateur dans le coin supérieur droit pour accéder au lien **déconnexion** . Cliquez sur **déconnexion** pour réinitialiser la session et revenir à la page d’accueil.
 
 ![Capture d’écran du menu déroulant avec le lien Déconnexion](./images/add-aad-auth-02.png)
 
