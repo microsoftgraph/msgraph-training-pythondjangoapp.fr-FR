@@ -5,7 +5,7 @@ Dans cet exercice, vous allez utiliser [Django](https://www.djangoproject.com/) 
 1. Si Django n’est pas encore installé, vous pouvez l’installer à partir de votre interface de ligne de commande (CLI) à l’aide de la commande suivante.
 
     ```Shell
-    pip install Django==3.0.4
+    pip install --user Django==3.1.4
     ```
 
 1. Ouvrez votre interface CLI, accédez à un répertoire où vous disposez des droits nécessaires pour créer des fichiers, puis exécutez la commande suivante pour créer une nouvelle application Django.
@@ -59,52 +59,57 @@ Dans cet exercice, vous allez utiliser [Django](https://www.djangoproject.com/) 
 
     :::code language="python" source="../demo/graph_tutorial/graph_tutorial/urls.py" id="UrlConfSnippet":::
 
-1. Ajoutez une vue temporaire à l' `tutorials` application pour vérifier que le routage des URL fonctionne. Ouvrez **./Tutorial/views.py** et ajoutez le code suivant.
+1. Ajoutez une vue temporaire à l' `tutorials` application pour vérifier que le routage des URL fonctionne. Ouvrez **./Tutorial/views.py** et remplacez l’intégralité de son contenu par le code suivant.
 
     ```python
     from django.shortcuts import render
     from django.http import HttpResponse, HttpResponseRedirect
+    from django.urls import reverse
+    from datetime import datetime, timedelta
+    from dateutil import tz, parser
 
     def home(request):
       # Temporary!
       return HttpResponse("Welcome to the tutorial.")
     ```
 
-1. Enregistrez toutes vos modifications et redémarrez le serveur. Accédez à `http://localhost:8000`. Vous devriez voir`Welcome to the tutorial.`
+1. Enregistrez toutes vos modifications et redémarrez le serveur. Accédez à `http://localhost:8000` . Vous devriez voir `Welcome to the tutorial.`
 
 ## <a name="install-libraries"></a>Installation des bibliothèques
 
 Avant de poursuivre, installez des bibliothèques supplémentaires que vous utiliserez plus tard :
 
-- [Demandes-OAuthlib : OAuth pour les êtres humains](https://requests-oauthlib.readthedocs.io/en/latest/) pour la gestion des flux de connexion et de jetons OAuth, et pour passer des appels à Microsoft Graph.
+- [Bibliothèque d’authentification Microsoft (MSAL) pour Python](https://github.com/AzureAD/microsoft-authentication-library-for-python) pour le traitement des flux de connexion et de jetons OAuth.
+- [Demandes : http pour les personnes](https://requests.readthedocs.io/en/master/) qui effectuent des appels à Microsoft Graph.
 - [PyYAML](https://pyyaml.org/wiki/PyYAMLDocumentation) pour le chargement de la configuration à partir d’un fichier YAML.
 - [python-dateutil](https://pypi.org/project/python-dateutil/) pour l’analyse des chaînes de date ISO 8601 renvoyées par Microsoft Graph.
 
 1. Exécutez la commande suivante dans votre interface CLI.
 
     ```Shell
-    pip install requests_oauthlib==1.3.0
+    pip install msal==1.7.0
+    pip install requests==2.25.0
     pip install pyyaml==5.3.1
     pip install python-dateutil==2.8.1
     ```
 
 ## <a name="design-the-app"></a>Concevoir l’application
 
-1. Créez un répertoire dans le répertoire **./Tutorial** nommé `templates`.
+1. Créez un répertoire dans le répertoire **./Tutorial** nommé `templates` .
 
-1. Dans le répertoire **./Tutorial/templates** , créez un répertoire nommé `tutorial`.
+1. Dans le répertoire **./Tutorial/templates** , créez un répertoire nommé `tutorial` .
 
-1. Dans le répertoire **./Tutorial/templates/Tutorial** , créez un fichier nommé `layout.html`. Ajoutez le code suivant dans ce fichier.
+1. Dans le répertoire **./Tutorial/templates/Tutorial** , créez un fichier nommé `layout.html` . Ajoutez le code suivant dans ce fichier.
 
     :::code language="html" source="../demo/graph_tutorial/tutorial/templates/tutorial/layout.html" id="LayoutSnippet":::
 
-    Ce code ajoute [Bootstrap](http://getbootstrap.com/) pour la mise en forme simple et [Font Awesome](https://fontawesome.com/) pour certaines icônes simples. Il définit également une disposition globale avec une barre de navigation.
+    Ce code ajoute [bootstrap](http://getbootstrap.com/) pour les styles simples et [Fabric Core](https://developer.microsoft.com/fluentui#/get-started#fabric-core) pour certaines icônes simples. Il définit également une disposition globale avec une barre de navigation.
 
-1. Créez un répertoire dans le répertoire **./Tutorial** nommé `static`.
+1. Créez un répertoire dans le répertoire **./Tutorial** nommé `static` .
 
-1. Dans le répertoire **./Tutorial/static** , créez un répertoire nommé `tutorial`.
+1. Dans le répertoire **./Tutorial/static** , créez un répertoire nommé `tutorial` .
 
-1. Dans le répertoire **./Tutorial/static/Tutorial** , créez un fichier nommé `app.css`. Ajoutez le code suivant dans ce fichier.
+1. Dans le répertoire **./Tutorial/static/Tutorial** , créez un fichier nommé `app.css` . Ajoutez le code suivant dans ce fichier.
 
     :::code language="css" source="../demo/graph_tutorial/tutorial/static/tutorial/app.css":::
 
@@ -116,9 +121,11 @@ Avant de poursuivre, installez des bibliothèques supplémentaires que vous util
 
     :::code language="python" source="../demo/graph_tutorial/tutorial/views.py" id="InitializeContextSnippet":::
 
-1. Remplacez l’affichage `home` existant par ce qui suit.
+1. Remplacez l' `home` affichage existant par ce qui suit.
 
     :::code language="python" source="../demo/graph_tutorial/tutorial/views.py" id="HomeViewSnippet":::
+
+1. Ajoutez un fichier PNG nommé **no-profile-photo.png** dans le répertoire **./Tutorial/static/Tutorial** .
 
 1. Enregistrez toutes vos modifications et redémarrez le serveur. À présent, l’application doit être très différente.
 

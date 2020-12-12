@@ -6,7 +6,7 @@ Ce module vous présente l’utilisation de Microsoft Graph pour accéder aux do
 
 Dans cet atelier, vous allez créer une application Web python django à l’aide du point de terminaison d’authentification Azure AD v2 pour accéder aux données dans Office 365 à l’aide de Microsoft Graph.
 
-- [Didacticiel de Python Microsoft Graph](https://docs.microsoft.com/graph/training/python-tutorial)
+- [Didacticiel de Python Microsoft Graph](https://docs.microsoft.com/graph/tutorials/python)
 
 ## <a name="completed-sample"></a>Exemple terminé
 
@@ -14,7 +14,7 @@ Si vous souhaitez simplement obtenir l’exemple complet généré en suivant ce
 
 - [Projet terminé](demo)
 
-## <a name="disclaimer"></a>Clause d’exclusion
+## <a name="disclaimer"></a>Clause d’exclusion de responsabilité
 
 **CE CODE est fourni *en* l’État sans garantie, expresse ou implicite, y compris toute garantie implicite d’adéquation à un usage particulier, de qualité MARCHANDe ou de non-contrefaçon.**
 
